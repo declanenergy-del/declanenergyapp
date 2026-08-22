@@ -89,7 +89,18 @@ async function loadOrders(email) {
 }
 
 function updateAccountUI(user) {
-  if (!user || !user.email) {
+  // If Firebase didn't provide a user (e.g. page reload or auth not persisted),
+  // fall back to localStorage so signing in on the home page still reflects here.
+  let resolved = user;
+  if (!resolved || !resolved.email) {
+    const storedEmail = localStorage.getItem(USER_EMAIL_KEY);
+    const storedUid = localStorage.getItem(USER_ID_KEY) || '';
+    if (storedEmail) {
+      resolved = { email: storedEmail, uid: storedUid };
+    }
+  }
+
+  if (!resolved || !resolved.email) {
     accountStatus.textContent = 'Not signed in';
     googleSignInBtn.classList.remove('hidden');
     signOutBtn.classList.add('hidden');
@@ -98,12 +109,12 @@ function updateAccountUI(user) {
     return;
   }
 
-  localStorage.setItem(USER_EMAIL_KEY, user.email);
-  localStorage.setItem(USER_ID_KEY, user.uid || '');
-  accountStatus.textContent = user.email;
+  localStorage.setItem(USER_EMAIL_KEY, resolved.email);
+  localStorage.setItem(USER_ID_KEY, resolved.uid || '');
+  accountStatus.textContent = resolved.email;
   googleSignInBtn.classList.add('hidden');
   signOutBtn.classList.remove('hidden');
-  loadOrders(user.email);
+  loadOrders(resolved.email);
 }
 
 async function handleGoogleSignIn() {

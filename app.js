@@ -476,17 +476,33 @@ function createProductCard(product) {
   const buttons = document.createElement('div');
   buttons.className = 'button-group';
 
+  const buyNowSpan = document.createElement('span');
+  buyNowSpan.className = 'buy-now-label';
+  buyNowSpan.textContent = 'Buy Now';
+
+  const paymentButtonsRow = document.createElement('div');
+  paymentButtonsRow.className = 'payment-buttons-row';
+
   const paystackButton = document.createElement('button');
-  paystackButton.className = 'button buy-button button-primary';
+  paystackButton.className = 'button buy-button button-secondary';
   paystackButton.textContent = 'Paystack';
   paystackButton.addEventListener('click', () => payWithPaystack(product));
 
   const flutterwaveButton = document.createElement('button');
-  flutterwaveButton.className = 'button buy-button button-secondary';
+  flutterwaveButton.className = 'button buy-button button-tertiary';
   flutterwaveButton.textContent = 'Flutterwave';
   flutterwaveButton.addEventListener('click', () => payWithFlutterwave(product));
 
-  buttons.append(paystackButton, flutterwaveButton);
+  paymentButtonsRow.append(paystackButton, flutterwaveButton);
+  // clicking the "Buy Now" label prompts the buyer to pick a payment method
+  buyNowSpan.addEventListener('click', () => {
+    showToast('Please choose Paystack or Flutterwave to complete your purchase.', 'warning');
+    paymentButtonsRow.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    paymentButtonsRow.classList.add('highlight');
+    setTimeout(() => paymentButtonsRow.classList.remove('highlight'), 2200);
+  });
+
+  buttons.append(buyNowSpan, paymentButtonsRow);
   content.appendChild(buttons);
   wrapper.appendChild(content);
 
@@ -557,7 +573,8 @@ document.addEventListener('keydown', (event) => {
     }
     const videoModal = document.getElementById('videoModal');
     if (videoModal && !videoModal.classList.contains('hidden')) {
-      closeVideoModal();
+      videoModal.classList.add('hidden');
+      document.body.style.overflow = '';
     }
   }
 });
@@ -807,6 +824,27 @@ async function initSite() {
 
   if (productCategoryFilter) {
     productCategoryFilter.addEventListener('change', renderProducts);
+  }
+
+  const videoModal = document.getElementById('videoModal');
+  const videoModalCloseBtn = document.getElementById('videoModalCloseBtn');
+
+  if (videoModalCloseBtn) {
+    videoModalCloseBtn.addEventListener('click', () => {
+      if (videoModal) {
+        videoModal.classList.add('hidden');
+        document.body.style.overflow = '';
+      }
+    });
+  }
+
+  if (videoModal) {
+    videoModal.addEventListener('click', (event) => {
+      if (event.target === videoModal) {
+        videoModal.classList.add('hidden');
+        document.body.style.overflow = '';
+      }
+    });
   }
 }
 

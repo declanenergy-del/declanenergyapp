@@ -117,6 +117,16 @@ body {
     background: rgba(15, 76, 129, .1)
 }
 
+.button-tertiary {
+    color: #fff;
+    background: rgba(15, 76, 129, .7);
+    border: 1px solid rgba(15, 76, 129, .5)
+}
+
+.button-tertiary:hover {
+    background: rgba(15, 76, 129, .85)
+}
+
 .hidden {
     display: none !important
 }
@@ -195,12 +205,41 @@ body {
     line-height: 1.7
 }
 
-.hero-actions,
+.hero-actions {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    margin-top: 20px;
+}
+
 .button-group {
     display: flex;
     gap: 12px;
     flex-wrap: wrap;
-    margin-top: 20px
+    margin-top: 20px;
+    flex-direction: column;
+}
+
+.buy-now-label {
+    display: block;
+    font-weight: 700;
+    font-size: 14px;
+    color: var(--text);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 8px
+}
+
+.payment-buttons-row {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap
+}
+
+.payment-buttons-row.highlight {
+    box-shadow: 0 6px 18px rgba(15,76,129,0.18);
+    transform: translateY(-4px);
+    transition: all 0.25s ease;
 }
 
 .shop-tools {
@@ -290,6 +329,99 @@ body {
 .product-card .buy-button {
     flex: 1;
     min-width: 140px
+}
+
+.video-section {
+    margin-top: 64px;
+    margin-bottom: 48px
+}
+
+.video-wrapper {
+    position: relative;
+    max-width: 700px;
+    margin: 0 auto
+}
+
+.video-container {
+    position: relative;
+    width: 100%;
+    padding-bottom: 56.25%;
+    background: #000;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: var(--shadow)
+}
+
+.official-video {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: block
+}
+
+.video-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.95);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    padding: 20px
+}
+
+.video-modal.hidden {
+    display: none
+}
+
+.video-modal-content {
+    position: relative;
+    width: 90%;
+    max-width: 1000px;
+    aspect-ratio: 16/9
+}
+
+.video-modal-close {
+    position: absolute;
+    top: -40px;
+    right: 0;
+    background: none;
+    border: none;
+    color: #fff;
+    font-size: 32px;
+    cursor: pointer;
+    padding: 0;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.2s ease
+}
+
+.video-modal-close:hover {
+    transform: scale(1.2)
+}
+
+.modal-video {
+    width: 100%;
+    height: 100%;
+    border-radius: 12px
+}
+
+@media (max-width: 768px) {
+    .video-modal-content {
+        max-width: 95%
+    }
+    .video-modal-close {
+        top: 10px;
+        right: 10px
+    }
 }
 
 .features-section,

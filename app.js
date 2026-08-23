@@ -650,10 +650,26 @@ function openVideoModal(product) {
   const videoModal = getVideoModal();
   const title = videoModal.querySelector('.video-modal-title');
   const videoElement = videoModal.querySelector('video');
+  const iframeElement = videoModal.querySelector('iframe');
 
-  title.textContent = product.name;
-  videoElement.src = product.video;
-  videoElement.load();
+  if (title) title.textContent = product.name || '';
+
+  // Prefer iframe when available (supports YouTube); otherwise use <video>
+  if (iframeElement) {
+    // convert common youtube links to embed form if needed
+    let src = product.video || '';
+    if (src.includes('youtu.be/') || src.includes('youtube.com/watch')) {
+      // normalize to embed URL
+      const idMatch = src.match(/(?:youtu\.be\/|v=)([A-Za-z0-9_-]{6,})/);
+      const vid = idMatch ? idMatch[1] : '';
+      src = vid ? `https://www.youtube.com/embed/${vid}?rel=0` : src;
+    }
+    iframeElement.src = src;
+  } else if (videoElement) {
+    videoElement.src = product.video || '';
+    try { videoElement.load(); } catch (e) { /* ignore */ }
+  }
+
   videoModal.classList.remove('hidden');
   document.body.style.overflow = 'hidden';
 }
@@ -673,7 +689,7 @@ function getVideoModal() {
         <h3 class="video-modal-title"></h3>
       </div>
       <div class="modal-main-photo video-player-wrapper">
-        <video controls class="video-player"></video>
+        <iframe class="video-player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
       </div>
     </div>
   `;
@@ -688,9 +704,13 @@ function closeVideoModal() {
   const videoModal = document.getElementById('videoModal');
   if (!videoModal) return;
   const videoElement = videoModal.querySelector('video');
+  const iframeElement = videoModal.querySelector('iframe');
   if (videoElement) {
-    videoElement.pause();
+    try { videoElement.pause(); } catch (e) { /* ignore */ }
     videoElement.src = '';
+  }
+  if (iframeElement) {
+    iframeElement.src = '';
   }
   videoModal.classList.add('hidden');
   document.body.style.overflow = '';
